@@ -22,7 +22,6 @@ namespace TwitterApp.DataAccessLayer
                 {
                     var person = new Person();
                     person.User_Id = model.User_Id;
-                    //person.Password = model.Password;
                     person.Password = Cryptography.Encrypt(model.Password);
                     person.FullName = model.FullName;
                     person.Email = model.Email;
