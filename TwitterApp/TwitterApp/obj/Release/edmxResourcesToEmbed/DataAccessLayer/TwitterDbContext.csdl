@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="TwitterDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Person">
+    <Key>
+      <PropertyRef Name="User_Id" />
+    </Key>
+    <Property Name="User_Id" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="FullName" Type="String" MaxLength="30" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Joined" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="Active" Type="Boolean" Nullable="false" />
+    <NavigationProperty Name="Person1" Relationship="Self.FK_Person_User_Id" FromRole="Person" ToRole="Person1" />
+    <NavigationProperty Name="Person2" Relationship="Self.FK_Person_User_Id" FromRole="Person1" ToRole="Person" />
+    <NavigationProperty Name="Tweets" Relationship="Self.FK_Tweet_User_Id" FromRole="Person" ToRole="Tweet" />
+    <NavigationProperty Name="Person11" Relationship="Self.Following" FromRole="Person" ToRole="Person1" />
+    <NavigationProperty Name="People" Relationship="Self.Following" FromRole="Person1" ToRole="Person" />
+  </EntityType>
+  <EntityType Name="Tweet">
+    <Key>
+      <PropertyRef Name="Tweet_Id" />
+    </Key>
+    <Property Name="Tweet_Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="User_Id" Type="String" MaxLength="25" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Message" Type="String" MaxLength="140" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Person" Relationship="Self.FK_Tweet_User_Id" FromRole="Tweet" ToRole="Person" />
+  </EntityType>
+  <Association Name="FK_Person_User_Id">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Person1" Type="Self.Person" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="User_Id" />
+      </Principal>
+      <Dependent Role="Person1">
+        <PropertyRef Name="User_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tweet_User_Id">
+    <End Role="Person" Type="Self.Person" Multiplicity="1" />
+    <End Role="Tweet" Type="Self.Tweet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Person">
+        <PropertyRef Name="User_Id" />
+      </Principal>
+      <Dependent Role="Tweet">
+        <PropertyRef Name="User_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="Following">
+    <End Role="Person" Type="Self.Person" Multiplicity="*" />
+    <End Role="Person1" Type="Self.Person" Multiplicity="*" />
+  </Association>
+  <EntityContainer Name="TwitterDatabaseEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="People" EntityType="Self.Person" />
+    <EntitySet Name="Tweets" EntityType="Self.Tweet" />
+    <AssociationSet Name="FK_Person_User_Id" Association="Self.FK_Person_User_Id">
+      <End Role="Person" EntitySet="People" />
+      <End Role="Person1" EntitySet="People" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tweet_User_Id" Association="Self.FK_Tweet_User_Id">
+      <End Role="Person" EntitySet="People" />
+      <End Role="Tweet" EntitySet="Tweets" />
+    </AssociationSet>
+    <AssociationSet Name="Following" Association="Self.Following">
+      <End Role="Person" EntitySet="People" />
+      <End Role="Person1" EntitySet="People" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

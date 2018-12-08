@@ -1,0 +1,79 @@
+﻿@model TwitterApp.ViewModels.SignUpViewModel
+
+@{
+    ViewBag.Title = "User Profile";
+}
+
+<h2>User Profile</h2>
+
+<div>
+    <hr />
+    <div class="container">
+        <hr />
+        <div class="form-group">
+            <span id="spanFollowDetails" class="badge" style="cursor:pointer;">@ViewBag.FollowDetails</span>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.User_Id, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.User_Id, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Joined, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-6">
+                @Html.DisplayFor(model => model.Joined, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Back", "TwitterStream")
+</p>
+
+@section Scripts{
+    @Styles.Render("~/Content/cssjqryUi")
+    @Scripts.Render("~/bundles/jqueryui")
+    <script type="text/javascript">
+
+
+        $('#spanFollowDetails').click(function () {
+            var txt = $(this).text();
+            var followValue = txt == 'Follow' ? true : false;
+            var currentPageUrl = window.location.href;
+            var otherUser = currentPageUrl.split('=')[1];
+            $.ajax({
+                    url: "@Url.Action("FollowOrUnFollw", "Twitter")",
+                    type: "POST",
+                    data: { followValue: followValue, otherUserId: otherUser },
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function (data) {
+                        alert("Error while follow/unfollow person");
+                    }
+                });
+        });
+        $("#spanFollowDetails").hover(function () {
+            var txt = $(this).text();
+            var tooltip = txt == 'Follow' ? "Click to Follow" : "Click to UnFollow";
+
+            $(this).css('cursor', 'pointer').attr('title', tooltip);
+        }, function () {
+            $(this).css('cursor', 'auto');
+        });
+    </script>
+}

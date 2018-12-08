@@ -1,0 +1,21 @@
+﻿
+@if (Session["FullName"] != null && Convert.ToString(Session["FullName"]) != "")
+{
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            @Html.ActionLink("Welcome " + Session["FullName"].ToString() + "!", "UserProfile", "Twitter")
+        </li>
+        <li>@Html.ActionLink("Home", "TwitterStream", "Twitter")</li>
+        <li>@Html.ActionLink("Profile", "UserProfile", "Twitter")</li>
+        <li>@Html.ActionLink("Sign Out", "Index", "Twitter")</li>
+        <li>@Html.ActionLink("Delete Account", "DeleteAccount", new { userId = Session["User_Id"].ToString() })</li>
+    </ul>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Login", "Login", "Twitter")</li>
+        <li>@Html.ActionLink("SignUp", "SignUp", "Twitter")</li>
+    </ul>
+}
